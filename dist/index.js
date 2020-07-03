@@ -4922,7 +4922,7 @@ function run() {
 exports.run = run;
 function getArguments() {
     const technology = core.getInput('technology');
-    let target = core.getInput('target') || '.';
+    const target = core.getInput('target') || '.';
     const security = core.getInput('security');
     const noJson = core.getInput('noJson');
     const noHtml = core.getInput('noHtml');
