@@ -1,0 +1,34 @@
+name: 'Insider Action'
+author: 'insidersec'
+description: 'Official insider action'
+
+branding:
+  icon: 'shield'
+  color: 'yellow'
+
+inputs:
+    version:
+        description: 'version of insider to use'
+        required: false
+    technology:
+        description: 'Specify which technology ruleset to load. (Valid values are: android, ios, csharp, javascript)'
+        required: true
+    target:
+        description: 'Specify where to look for files to run the specific ruleset.'
+        required: false
+    security:
+        description: 'Set the Security level, values between 0 and 100'
+        required: false
+    noJson:
+        description: 'Skips the report generation in the JSON format'
+        required: false
+    noHtml:
+        description: 'Skips the report generation in the HTML format'
+        required: false
+    noBanner:
+        description: 'Skips the banner printing'
+        required: false
+
+runs:
+    using: 'node12'
+    main: 'dist/index.js'
