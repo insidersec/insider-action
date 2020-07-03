@@ -17,7 +17,7 @@ export async function run(): Promise<void> {
   }
 }
 
-function getArguments(): Array<string> {
+function getArguments(): string[] {
   const technology = core.getInput('technology')
   const target = core.getInput('target') || '.'
   const security = core.getInput('security')

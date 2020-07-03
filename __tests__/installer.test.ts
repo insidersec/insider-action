@@ -11,5 +11,4 @@ describe('installer', () => {
     const insider = await installer.getInsider('2.0.4')
     expect(fs.existsSync(insider)).toBe(true)
   }, 100000)
-
 })

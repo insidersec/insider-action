@@ -28,7 +28,8 @@
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.4",
     "@actions/http-client": "^1.0.8",
-    "@actions/tool-cache": "^1.5.5"
+    "@actions/tool-cache": "^1.5.5",
+    "eslint-plugin-prettier": "^3.1.4"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",

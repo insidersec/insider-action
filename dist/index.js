@@ -4786,7 +4786,7 @@ function getInsider(version) {
         const downloadPath = yield tc.downloadTool(downloadURL);
         core.info('📦 Extracting Insider...');
         let extPath;
-        if (osPlat == 'win32') {
+        if (osPlat === 'win32') {
             extPath = yield tc.extractZip(downloadPath);
         }
         else {
@@ -4795,7 +4795,7 @@ function getInsider(version) {
         core.debug(`Extracted to ${extPath}`);
         const cachePath = yield tc.cacheDir(extPath, 'insider-action', release.tag_name);
         core.debug(`Cached to ${cachePath}`);
-        const exePath = path.join(cachePath, osPlat == 'win32' ? 'insider.exe' : 'insider');
+        const exePath = path.join(cachePath, osPlat === 'win32' ? 'insider.exe' : 'insider');
         core.debug(`Exe path is ${exePath}`);
         return exePath;
     });
@@ -4807,9 +4807,9 @@ const getRelease = (version) => __awaiter(void 0, void 0, void 0, function* () {
     return (yield http.getJson(url)).result;
 });
 const getFileName = (version) => {
-    const platform = osPlat == 'win32' ? 'windows' : osPlat == 'darwin' ? 'darwin' : 'linux';
-    const arch = osArch == 'x64' ? 'x86_64' : 'i386';
-    const ext = osPlat == 'win32' ? 'zip' : 'tar.gz';
+    const platform = osPlat === 'win32' ? 'windows' : osPlat === 'darwin' ? 'darwin' : 'linux';
+    const arch = osArch === 'x64' ? 'x86_64' : 'i386';
+    const ext = osPlat === 'win32' ? 'zip' : 'tar.gz';
     return `insider_${version}_${platform}_${arch}.${ext}`;
 };
 

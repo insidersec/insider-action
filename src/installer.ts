@@ -21,7 +21,7 @@ export async function getInsider(version: string): Promise<string> {
 
   core.info('📦 Extracting Insider...')
   let extPath: string
-  if (osPlat == 'win32') {
+  if (osPlat === 'win32') {
     extPath = await tc.extractZip(downloadPath)
   } else {
     extPath = await tc.extractTar(downloadPath)
@@ -37,7 +37,7 @@ export async function getInsider(version: string): Promise<string> {
 
   const exePath: string = path.join(
     cachePath,
-    osPlat == 'win32' ? 'insider.exe' : 'insider'
+    osPlat === 'win32' ? 'insider.exe' : 'insider'
   )
   core.debug(`Exe path is ${exePath}`)
 
@@ -56,8 +56,9 @@ const getRelease = async (version: string): Promise<GitHubRelease | null> => {
 }
 
 const getFileName = (version: string): string => {
-  const platform = osPlat == 'win32' ? 'windows' : osPlat == 'darwin' ? 'darwin' : 'linux'
-  const arch = osArch == 'x64' ? 'x86_64' : 'i386'
-  const ext = osPlat == 'win32' ? 'zip' : 'tar.gz'
+  const platform =
+    osPlat === 'win32' ? 'windows' : osPlat === 'darwin' ? 'darwin' : 'linux'
+  const arch = osArch === 'x64' ? 'x86_64' : 'i386'
+  const ext = osPlat === 'win32' ? 'zip' : 'tar.gz'
   return `insider_${version}_${platform}_${arch}.${ext}`
 }
