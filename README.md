@@ -1,10 +1,22 @@
-![Insider Action](.github/insider-action.png)
+<p align="center">
+  <img src="https://insidersec.io/wp-content/uploads/2020/03/insider-novo-logo.png">
+  <p align="center">
+      <a href="https://github.com/insidersec/insider-action/releases">
+        <img src="https://img.shields.io/badge/version-0.1.2-blue.svg">
+      </a>
+      <a href="https://github.com/marketplace/actions/insider-action">
+        <img alt="GitHub marketplace" src="https://img.shields.io/badge/marketplace-insider--action-blue?logo=github&style=flat-square">
+      </a>
+      <a href="https://github.com/insidersec/insider-action/actions?workflow=test">
+        <img alt="Test workflow" src="https://img.shields.io/github/workflow/status/insidersec/insider-action/test?label=test&logo=github&style=flat-square">
+      </a>
+  </p>
+</p>
 
 * [Usage](#usage)
-  * [Workflow](#Workflow)
-* [Customization](#Customizing)
-  * [Inputs](#Inputs)
-* [License](#license)
+  * [Workflow](#workflow)
+* [Customization](#customizing)
+  * [Inputs](#inputs)
 
 ## Usage
 
@@ -12,19 +24,23 @@
 
 ```yaml
 name: insider
-
 on:
   pull_request:
   push:
-
 jobs:
   insider:
     runs-on: ubuntu-latest
-  steps:
-    - name: Run Insider
-      uses: insidersec/insider@v1
-      with:
-        technology: javascript
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Run Insider
+        uses: insidersec/insider-action@v0
+        with:
+            technology: javascript
+            target: src
 ```
 
 ## Customizing
@@ -43,7 +59,3 @@ Following inputs can be used as `steps.with` keys
 | `noJson`         | Bool    |           | Skips the report generation in the JSON format              |
 | `noBanner`       | Bool    |           | Skips the banner printing                                   |
 
-
-
-
-## License
