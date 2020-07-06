@@ -40,6 +40,8 @@ jobs:
         uses: insidersec/insider-action@v0
         with:
             technology: javascript
+            # Relative path under $GITHUB_WORKSPACE to use as a target
+            # In this example, will use $GITHUB_WORKSPACE/src as a target
             target: src
 ```
 
@@ -53,7 +55,7 @@ Following inputs can be used as `steps.with` keys
 |------------------|---------|-----------|-------------------------------------------------------------|
 | `version`        | String  | `latest`  | Insider version                                             |
 | `technology`     | String  |           | Specify which technology ruleset to load                    |
-| `target`         | String  | `.`       | Specify where to look for files to run the specific ruleset |
+| `target`         | String  | `.`       | Relative path under $GITHUB_WORKSPACE to use as a target    |
 | `security`       | String  |           | Set the Security level, values between 0 and 100            |
 | `noHtml`         | Bool    |           | Skips the report generation in the HTML format              |
 | `noJson`         | Bool    |           | Skips the report generation in the JSON format              |
