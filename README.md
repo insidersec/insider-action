@@ -2,7 +2,7 @@
   <img src="https://insidersec.io/wp-content/uploads/2020/03/insider-novo-logo.png">
   <p align="center">
       <a href="https://github.com/insidersec/insider-action/releases">
-        <img src="https://img.shields.io/badge/version-0.1.2-blue.svg">
+        <img src="https://img.shields.io/badge/version-0.1.4-blue.svg">
       </a>
       <a href="https://github.com/marketplace/actions/insider-action">
         <img alt="GitHub marketplace" src="https://img.shields.io/badge/marketplace-insider--action-blue?logo=github&style=flat-square">
