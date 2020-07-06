@@ -4901,6 +4901,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
+const path = __importStar(__webpack_require__(622));
 const core = __importStar(__webpack_require__(470));
 const exec = __importStar(__webpack_require__(986));
 const installer = __importStar(__webpack_require__(749));
@@ -4921,14 +4922,22 @@ function run() {
 }
 exports.run = run;
 function getArguments() {
+    let githubWorkspacePath = process.env['GITHUB_WORKSPACE'];
+    if (!githubWorkspacePath) {
+        throw new Error('GITHUB_WORKSPACE not defined');
+    }
+    githubWorkspacePath = path.resolve(githubWorkspacePath);
+    core.debug(`GITHUB_WORKSPACE = '${githubWorkspacePath}'`);
     const technology = core.getInput('technology');
     const target = core.getInput('target') || '.';
     const security = core.getInput('security');
     const noJson = core.getInput('noJson');
     const noHtml = core.getInput('noHtml');
     const noBanner = core.getInput('noBanner');
+    githubWorkspacePath = path.resolve(githubWorkspacePath, target);
+    core.info(`📂 Using ${githubWorkspacePath} as target`);
     // required flags
-    const args = ['-tech', technology, '-target', target];
+    const args = ['-tech', technology, '-target', githubWorkspacePath];
     if (security) {
         args.push('-security', security);
     }
