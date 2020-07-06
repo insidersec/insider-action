@@ -4910,6 +4910,9 @@ function run() {
         try {
             const version = core.getInput('version') || 'latest';
             const insider = yield installer.getInsider(version);
+            const insiderPath = path.dirname(insider);
+            core.info(`📂 Using ${insiderPath} as working directory...`);
+            process.chdir(insiderPath);
             const args = getArguments();
             core.info('🏃 Running Insider...');
             yield exec.exec(`${insider}`, args);
@@ -4935,7 +4938,6 @@ function getArguments() {
     const noHtml = core.getInput('noHtml');
     const noBanner = core.getInput('noBanner');
     githubWorkspacePath = path.resolve(githubWorkspacePath, target);
-    core.info(`📂 Using ${githubWorkspacePath} as target`);
     // required flags
     const args = ['-tech', technology, '-target', githubWorkspacePath];
     if (security) {

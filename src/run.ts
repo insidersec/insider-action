@@ -7,6 +7,10 @@ export async function run(): Promise<void> {
   try {
     const version = core.getInput('version') || 'latest'
     const insider = await installer.getInsider(version)
+    const insiderPath = path.dirname(insider)
+
+    core.info(`📂 Using ${insiderPath} as working directory...`)
+    process.chdir(insiderPath)
 
     const args = getArguments()
 
@@ -34,7 +38,6 @@ function getArguments(): string[] {
   const noBanner = core.getInput('noBanner')
 
   githubWorkspacePath = path.resolve(githubWorkspacePath, target)
-  core.info(`📂 Using ${githubWorkspacePath} as target`)
 
   // required flags
   const args = ['-tech', technology, '-target', githubWorkspacePath]
