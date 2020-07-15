@@ -13,10 +13,16 @@
   </p>
 </p>
 
+* [About](#about)
 * [Usage](#usage)
   * [Workflow](#workflow)
 * [Customization](#customizing)
   * [Inputs](#inputs)
+
+## About
+Hello! You are here because you are concerned about the security of your code, right? Cool, you are in the right place. Insider-action is the key that permits you protect your repository with [Insider](https://github.com/insidersec/insider), free, easy to integrate and frictionless. It is the most easy way to protect your code directly on your repository.
+
+We currently support the following technologies: **Java (Maven and Android), Kotlin (Android), Swift (iOS), .NET Full Framework, C#, and Javascript (Node.js).**
 
 ## Usage
 
