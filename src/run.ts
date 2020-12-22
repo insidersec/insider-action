@@ -60,7 +60,7 @@ function getArguments(): string[] {
   githubWorkspacePath = path.resolve(githubWorkspacePath)
   core.debug(`GITHUB_WORKSPACE = '${githubWorkspacePath}'`)
 
-  const technology = core.getInput('technology') || 'javascript' // TODO change this!
+  const technology = core.getInput('technology')
   const target = core.getInput('target') || '.'
   const security = core.getInput('security')
   const noJson = core.getInput('noJson')

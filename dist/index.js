@@ -5000,7 +5000,7 @@ exports.getUploadFileConcurrency = getUploadFileConcurrency;
 // When uploading large files that can't be uploaded with a single http call, this controls
 // the chunk size that is used during upload
 function getUploadChunkSize() {
-    return 4 * 1024 * 1024; // 4 MB Chunks
+    return 8 * 1024 * 1024; // 8 MB Chunks
 }
 exports.getUploadChunkSize = getUploadChunkSize;
 // The maximum number of retries that can be attempted before an upload or download fails
@@ -5982,11 +5982,12 @@ const utils_1 = __webpack_require__(870);
  * Used for managing http clients during either upload or download
  */
 class HttpManager {
-    constructor(clientCount) {
+    constructor(clientCount, userAgent) {
         if (clientCount < 1) {
             throw new Error('There must be at least one client');
         }
-        this.clients = new Array(clientCount).fill(utils_1.createHttpClient());
+        this.userAgent = userAgent;
+        this.clients = new Array(clientCount).fill(utils_1.createHttpClient(userAgent));
     }
     getClient(index) {
         return this.clients[index];
@@ -5995,7 +5996,7 @@ class HttpManager {
     // for more information see: https://github.com/actions/http-client/blob/04e5ad73cd3fd1f5610a32116b0759eddf6570d2/index.ts#L292
     disposeAndReplaceClient(index) {
         this.clients[index].dispose();
-        this.clients[index] = utils_1.createHttpClient();
+        this.clients[index] = utils_1.createHttpClient(this.userAgent);
     }
     disposeAndReplaceAllClients() {
         for (const [index] of this.clients.entries()) {
@@ -6353,6 +6354,7 @@ class HTTPError extends Error {
 }
 exports.HTTPError = HTTPError;
 const IS_WINDOWS = process.platform === 'win32';
+const IS_MAC = process.platform === 'darwin';
 const userAgent = 'actions/tool-cache';
 /**
  * Download a tool from an url and stream it into a file
@@ -6568,6 +6570,36 @@ function extractTar(file, dest, flags = 'xz') {
     });
 }
 exports.extractTar = extractTar;
+/**
+ * Extract a xar compatible archive
+ *
+ * @param file     path to the archive
+ * @param dest     destination directory. Optional.
+ * @param flags    flags for the xar. Optional.
+ * @returns        path to the destination directory
+ */
+function extractXar(file, dest, flags = []) {
+    return __awaiter(this, void 0, void 0, function* () {
+        assert_1.ok(IS_MAC, 'extractXar() not supported on current OS');
+        assert_1.ok(file, 'parameter "file" is required');
+        dest = yield _createExtractFolder(dest);
+        let args;
+        if (flags instanceof Array) {
+            args = flags;
+        }
+        else {
+            args = [flags];
+        }
+        args.push('-x', '-C', dest, '-f', file);
+        if (core.isDebug()) {
+            args.push('-v');
+        }
+        const xarPath = yield io.which('xar', true);
+        yield exec_1.exec(`"${xarPath}"`, _unique(args));
+        return dest;
+    });
+}
+exports.extractXar = extractXar;
 /**
  * Extract a zip
  *
@@ -6875,6 +6907,13 @@ function _getGlobal(key, defaultValue) {
     const value = global[key];
     /* eslint-enable @typescript-eslint/no-explicit-any */
     return value !== undefined ? value : defaultValue;
+}
+/**
+ * Returns an array of unique values.
+ * @param values Values to make unique.
+ */
+function _unique(values) {
+    return Array.from(new Set(values));
 }
 //# sourceMappingURL=tool-cache.js.map
 
@@ -9658,7 +9697,7 @@ const upload_gzip_1 = __webpack_require__(647);
 const stat = util_1.promisify(fs.stat);
 class UploadHttpClient {
     constructor() {
-        this.uploadHttpManager = new http_manager_1.HttpManager(config_variables_1.getUploadFileConcurrency());
+        this.uploadHttpManager = new http_manager_1.HttpManager(config_variables_1.getUploadFileConcurrency(), '@actions/artifact-upload');
         this.statusReporter = new status_reporter_1.StatusReporter(10000);
     }
     /**
@@ -10737,7 +10776,7 @@ const http_manager_1 = __webpack_require__(452);
 const config_variables_1 = __webpack_require__(401);
 class DownloadHttpClient {
     constructor() {
-        this.downloadHttpManager = new http_manager_1.HttpManager(config_variables_1.getDownloadFileConcurrency());
+        this.downloadHttpManager = new http_manager_1.HttpManager(config_variables_1.getDownloadFileConcurrency(), '@actions/artifact-download');
         // downloads are usually significantly faster than uploads so display status information every second
         this.statusReporter = new status_reporter_1.StatusReporter(1000);
     }
@@ -11278,7 +11317,7 @@ function getArguments() {
     }
     githubWorkspacePath = path.resolve(githubWorkspacePath);
     core.debug(`GITHUB_WORKSPACE = '${githubWorkspacePath}'`);
-    const technology = core.getInput('technology') || 'javascript'; // TODO change this!
+    const technology = core.getInput('technology');
     const target = core.getInput('target') || '.';
     const security = core.getInput('security');
     const noJson = core.getInput('noJson');
@@ -11382,7 +11421,8 @@ function isRetryableStatusCode(statusCode) {
         http_client_1.HttpCodes.BadGateway,
         http_client_1.HttpCodes.ServiceUnavailable,
         http_client_1.HttpCodes.GatewayTimeout,
-        http_client_1.HttpCodes.TooManyRequests
+        http_client_1.HttpCodes.TooManyRequests,
+        413 // Payload Too Large
     ];
     return retryableStatusCodes.includes(statusCode);
 }
@@ -11487,8 +11527,8 @@ function getUploadHeaders(contentType, isKeepAlive, isGzip, uncompressedLength, 
     return requestOptions;
 }
 exports.getUploadHeaders = getUploadHeaders;
-function createHttpClient() {
-    return new http_client_1.HttpClient('actions/artifact', [
+function createHttpClient(userAgent) {
+    return new http_client_1.HttpClient(userAgent, [
         new auth_1.BearerCredentialHandler(config_variables_1.getRuntimeToken())
     ]);
 }
